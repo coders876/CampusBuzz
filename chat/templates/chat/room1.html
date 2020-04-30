@@ -1,0 +1,122 @@
+
+<html>
+<head>
+    {% load static %}
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+	<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+	<link href="{% static 'chat/css/room1css.css'%}" type="text/css" rel="stylesheet">
+</head>
+<body class="bg-funky">
+<div class="container">
+<h3 color="blue">{{receiver.first_name}} {{receiver.second_name}}</h3>
+<div class="messaging">
+      <div class="inbox_msg">
+
+        <div class="mesgs">
+          <div class="msg_history">
+            <div class="incoming_msg">
+<!--              <div class="incoming_msg_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>-->
+<!--              <div class="received_msg">-->
+<!--                <div class="received_withd_msg">-->
+<!--                  <p>specimen book.</p>-->
+<!--                  <span class="time_date"> 11:01 AM    |    June 9</span></div>-->
+<!--              </div>-->
+            </div>
+
+            <div class="outgoing_msg">
+<!--              <div class="sent_msg">-->
+<!--                <p></p>-->
+<!--                <span class="time_date"> 11:01 AM    |    June 9</span> </div>-->
+            </div>
+          </div>
+            {% for mess in message %}
+            {% if mess.sender_id != receiver.id %}
+                <div class="outgoing_msg">
+                  <div class="sent_msg">
+                    <p>{{mess.text}}</p>
+                    <span class="time_date">{{mess.created}}</span> </div>
+                </div>
+            {% else %}
+                <div class="incoming_msg">
+                  <div class="incoming_msg_img"> <img src="{{receiver.profile.profile_pic.url}}" alt="sunil"> </div>
+                  <div class="received_msg">
+                    <div class="received_withd_msg">
+                      <p>{{mess.text}}</p>
+                      <span class="time_date">{{mess.created}}</span></div>
+                  </div>
+                </div>
+            {% endif %}
+            {% endfor %}
+            <div class="msg_history" id="add_to_me">
+            </div>
+        </div>
+      </div>
+    <br>
+    <input id="chat-message-input" type="text" size="100"><br>
+    <br>
+        <input id="chat-message-submit" type="button" value="Send">
+  </div>
+</div>
+  </body>
+      {{ sender_id|json_script:"sender_id" }}
+      {{ receiver_id|json_script:"receiver_id" }}
+  <script>
+        const sender = JSON.parse(document.getElementById('sender_id').textContent);
+        const receiver = JSON.parse(document.getElementById('receiver_id').textContent);
+        const chatSocket = new WebSocket(
+            'ws://'
+            + window.location.host
+            + '/ws/chat/'
+            + sender.toString()
+            + '/'
+            + receiver.toString()
+            + '/'
+        );
+
+        chatSocket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            if(data.sender_id==sender)
+            {
+                document.getElementById("add_to_me").innerHTML+=
+                        "<div class=\"outgoing_msg\">\n" +
+                        "<div class=\"sent_msg\">\n" +
+                        "<p>" + data.message + "</p>\n" +
+                        " <span class=\"time_date\">" +  data.time + "</span></div>\n" +
+                        "</div>"
+            }
+            else {
+                document.getElementById("add_to_me").innerHTML+=
+                        "<div class=\"incoming_msg\">\n" +
+                        "<div class=\"incoming_msg_img\"> <img src=\"{{receiver.profile.profile_pic.url}}\" alt=\"sunil\"> </div>\n" +
+                        "<div class=\"received_msg\">\n" +
+                        "<div class=\"received_withd_msg\">\n" +
+                        "<p>" + data.message + "</p>\n" +
+                        "<span class=\"time_date\">" +  data.time + "</span></div>\n" +
+                        "</div>\n" +
+                        "</div>"
+            }
+        };
+
+        chatSocket.onclose = function(e) {
+            console.error('Chat socket closed unexpectedly');
+        };
+
+        document.querySelector('#chat-message-input').focus();
+        document.querySelector('#chat-message-input').onkeyup = function(e) {
+            if (e.keyCode === 13) {  // enter, return
+                document.querySelector('#chat-message-submit').click();
+            }
+        };
+
+        document.querySelector('#chat-message-submit').onclick = function(e) {
+            const messageInputDom = document.querySelector('#chat-message-input');
+            const message = messageInputDom.value;
+            chatSocket.send(JSON.stringify({
+                'message': message
+            }));
+            messageInputDom.value = '';
+        };
+    </script>
+    </html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <head>
+{% load static %}
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<meta charset="utf-8">
+		<title>CampusBuzz</title>
+        <link rel="shortcut icon" href="{% static 'chat/images/faviconlogo.ico' %}" />
+		<meta name="generator" content="Bootply" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link href="{% static 'chat/css/bootstrap.min.css' %}" rel="stylesheet">
+		<!--[if lt IE 9]>
+        <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+		<link href="css/styles.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js /bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+        <link href="https://fonts.googleapis.com/css?family=Shrikhand|ZCOOL+XiaoWei" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Baloo+Chettan" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Frank+Ruhl+Libre" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Rock+Salt" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    </head>
+
+</head>
+<body>
+<h1> Select a friend for chat </h1>
+    <br>
+    {%for friend in friends%}
+    <div class="" style="margin: 30px;background-color: #cce5ff; border:1px solid transparent; border-radius:10px; padding: 15px;">
+        <!--<div class="panel-thumbnail"><img src="/assets/example/bg_5.jpg" class="img-responsive"></div>-->
+        <div class="panel-body">
+          <!--<p class="lead"><a href="{% url 'login:home' user.username %}">{{user.first_name}} {{user.last_name}}</a><br></p>-->
+
+
+          <p>
+              {% if friend.profile.profile_pic %}
+                    <img src="{{ friend.profile.profile_pic.url }}" alt="avatar" style="vertical-align: middle; width: 50px; height: 50px; border-radius: 50%; "/>
+              {% else %}
+                    <img src="https://lh3.googleusercontent.com/uFp_tsTJboUY7kue5XAsGA=s28" width="28px" height="28px">
+              {% endif %}
+
+              <h2><a href="{% url 'chat:room' user.id friend.id %}" class="btn btn-primary btn-md">{{friend.first_name}} {{friend.last_name}}</a></h2>
+          </p>
+        </div>
+      </div>
+<!--        <a href="{% url 'login:home' user.username %}">{{user.first_name}} {{user.last_name}}</a>-->
+<!--        <a href="{% url 'chat:room' user.id friend.id%}">{{friend.first_name}} {{friend.second_name}}</a>-->
+    <br>
+    {% endfor %}
+
+</body>
+</html>
